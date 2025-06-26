@@ -5,7 +5,6 @@ import csv
 import json
 import os
 
-# ✅ Step 1: Download ZIP
 ZIP_URL = "https://www.thenumberingsystem.com.au/download/EnhancedFullDownload.zip"
 
 def download_and_extract_csv():
@@ -17,38 +16,35 @@ def download_and_extract_csv():
             if file.endswith('.csv'):
                 with z.open(file) as csvfile:
                     return csvfile.read().decode('utf-8')
-
     raise Exception("CSV file not found in ZIP.")
 
-# ✅ Step 2: Filter available numbers
 def filter_available_numbers(csv_text):
     reader = csv.DictReader(io.StringIO(csv_text))
-    print(f"📋 CSV Headers: {reader.fieldnames}")  # DEBUG LINE
+    print(f"📋 CSV Headers: {reader.fieldnames}")
     available = []
 
     for row in reader:
-        number = row.get("Number", "").strip()
-        status = row.get("Allocation Status", "").strip().lower()  # ✅ Fixed column name
+        status = row.get("Status", "").strip().lower()
+        from_number = row.get("From", "").strip()
+        to_number = row.get("To", "").strip()
 
         if status != "allocated":
-            if number.startswith("13") and len(number) == 6:
-                available.append({"number": number, "status": "available"})
-            elif number.startswith("1300") and len(number) == 10:
-                available.append({"number": number, "status": "available"})
-            elif number.startswith("1800") and len(number) == 10:
-                available.append({"number": number, "status": "available"})
+            if from_number.startswith("13") and len(from_number) == 6:
+                available.append({"from": from_number, "to": to_number, "status": "available"})
+            elif from_number.startswith("1300") and len(from_number) == 10:
+                available.append({"from": from_number, "to": to_number, "status": "available"})
+            elif from_number.startswith("1800") and len(from_number) == 10:
+                available.append({"from": from_number, "to": to_number, "status": "available"})
 
-    print(f"🔢 Found {len(available)} available numbers.")  # DEBUG LINE
+    print(f"🔢 Found {len(available)} available numbers.")
     return available
 
-# ✅ Step 3: Save JSON to /docs (for GitHub Pages)
 def save_to_json(data):
     os.makedirs("docs", exist_ok=True)
     with open("docs/available_numbers.json", "w") as f:
         json.dump(data, f, indent=2)
     print(f"✅ Saved {len(data)} available numbers to docs/available_numbers.json")
 
-# 🔁 Run everything
 if __name__ == "__main__":
     try:
         print("📥 Downloading ZIP file...")
