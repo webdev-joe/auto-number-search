@@ -1,13 +1,14 @@
 name: Daily Number Search
 
 on:
-  schedule:
-    - cron: '0 15 * * *'  # 1AM AEST (UTC+10)
   workflow_dispatch:
+  schedule:
+    - cron: '0 14 * * *'  # runs daily at 1am AEST (3pm UTC)
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -15,10 +16,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install requests
 
       - name: Run script
         run: python main.py
@@ -28,5 +29,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/available_numbers.json
-          git commit -m "🔄 Update available_numbers.json from workflow" || echo "No changes to commit"
-          git push
+          git commit -m "Update available_numbers.json from workflow" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:main
