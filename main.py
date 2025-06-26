@@ -23,11 +23,12 @@ def download_and_extract_csv():
 # ✅ Step 2: Filter available numbers
 def filter_available_numbers(csv_text):
     reader = csv.DictReader(io.StringIO(csv_text))
+    print(f"📋 CSV Headers: {reader.fieldnames}")  # DEBUG LINE
     available = []
 
     for row in reader:
         number = row.get("Number", "").strip()
-        status = row.get("Status", "").strip().lower()
+        status = row.get("Allocation Status", "").strip().lower()  # ✅ Fixed column name
 
         if status != "allocated":
             if number.startswith("13") and len(number) == 6:
@@ -37,6 +38,7 @@ def filter_available_numbers(csv_text):
             elif number.startswith("1800") and len(number) == 10:
                 available.append({"number": number, "status": "available"})
 
+    print(f"🔢 Found {len(available)} available numbers.")  # DEBUG LINE
     return available
 
 # ✅ Step 3: Save JSON to /docs (for GitHub Pages)
@@ -53,11 +55,6 @@ if __name__ == "__main__":
         csv_text = download_and_extract_csv()
         print("🔍 Filtering available numbers...")
         available = filter_available_numbers(csv_text)
-
-        # 🐞 Debug: Print first 5 results
-        print(f"📊 Found {len(available)} available numbers")
-        print("🔎 Sample:", available[:5])
-
         save_to_json(available)
     except Exception as e:
         print(f"❌ Error: {e}")
