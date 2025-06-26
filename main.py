@@ -38,11 +38,13 @@ def filter_available_numbers(csv_text):
 
     return available
 
-# ✅ Step 3: Save JSON
+# ✅ Step 3: Save JSON to /docs (for GitHub Pages)
 def save_to_json(data):
-    with open("available_numbers.json", "w") as f:
+    import os
+    os.makedirs("docs", exist_ok=True)  # Ensure docs/ folder exists
+    with open("docs/available_numbers.json", "w") as f:
         json.dump(data, f, indent=2)
-    print(f"✅ Saved {len(data)} available numbers to available_numbers.json")
+    print(f"✅ Saved {len(data)} available numbers to docs/available_numbers.json")
 
 # 🔁 Run everything
 if __name__ == "__main__":
