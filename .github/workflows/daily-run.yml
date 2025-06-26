@@ -2,7 +2,7 @@ name: Daily Number Search
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # 1am AEST
+    - cron: '0 14 * * *'  # runs daily at 1am AEST (3pm UTC)
   workflow_dispatch:
 
 jobs:
