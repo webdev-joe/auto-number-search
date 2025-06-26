@@ -3,6 +3,7 @@ import zipfile
 import io
 import csv
 import json
+import os
 
 # ✅ Step 1: Download ZIP
 ZIP_URL = "https://www.thenumberingsystem.com.au/download/EnhancedFullDownload.zip"
@@ -40,8 +41,7 @@ def filter_available_numbers(csv_text):
 
 # ✅ Step 3: Save JSON to /docs (for GitHub Pages)
 def save_to_json(data):
-    import os
-    os.makedirs("docs", exist_ok=True)  # Ensure docs/ folder exists
+    os.makedirs("docs", exist_ok=True)
     with open("docs/available_numbers.json", "w") as f:
         json.dump(data, f, indent=2)
     print(f"✅ Saved {len(data)} available numbers to docs/available_numbers.json")
@@ -53,8 +53,11 @@ if __name__ == "__main__":
         csv_text = download_and_extract_csv()
         print("🔍 Filtering available numbers...")
         available = filter_available_numbers(csv_text)
+
+        # 🐞 Debug: Print first 5 results
+        print(f"📊 Found {len(available)} available numbers")
+        print("🔎 Sample:", available[:5])
+
         save_to_json(available)
     except Exception as e:
         print(f"❌ Error: {e}")
-
-# Add main script
