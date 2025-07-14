@@ -1088,14 +1088,6 @@
     "status": "available"
   },
   {
-    "number": "132040",
-    "status": "available"
-  },
-  {
-    "number": "132041",
-    "status": "available"
-  },
-  {
     "number": "132043",
     "status": "available"
   },
@@ -2301,10 +2293,6 @@
   },
   {
     "number": "133288",
-    "status": "available"
-  },
-  {
-    "number": "133292",
     "status": "available"
   },
   {
@@ -48841,6 +48829,14 @@
   },
   {
     "number": "1300099101",
+    "status": "available"
+  },
+  {
+    "number": "1300099117",
+    "status": "available"
+  },
+  {
+    "number": "1300099118",
     "status": "available"
   },
   {
@@ -126009,10 +126005,6 @@
   },
   {
     "number": "1300277828",
-    "status": "available"
-  },
-  {
-    "number": "1300277829",
     "status": "available"
   },
   {
@@ -217525,6 +217517,10 @@
   },
   {
     "number": "1300472228",
+    "status": "available"
+  },
+  {
+    "number": "1300472229",
     "status": "available"
   },
   {
@@ -336953,10 +336949,6 @@
   },
   {
     "number": "1300728449",
-    "status": "available"
-  },
-  {
-    "number": "1300728450",
     "status": "available"
   },
   {
@@ -478300,14 +478292,6 @@
     "status": "available"
   },
   {
-    "number": "1300996688",
-    "status": "available"
-  },
-  {
-    "number": "1300996689",
-    "status": "available"
-  },
-  {
     "number": "1300996691",
     "status": "available"
   },
@@ -513741,6 +513725,10 @@
   },
   {
     "number": "1800052723",
+    "status": "available"
+  },
+  {
+    "number": "1800052727",
     "status": "available"
   },
   {
@@ -678784,14 +678772,6 @@
     "status": "available"
   },
   {
-    "number": "1800399752",
-    "status": "available"
-  },
-  {
-    "number": "1800399753",
-    "status": "available"
-  },
-  {
     "number": "1800399769",
     "status": "available"
   },
@@ -708637,6 +708617,10 @@
   },
   {
     "number": "1800472228",
+    "status": "available"
+  },
+  {
+    "number": "1800472229",
     "status": "available"
   },
   {
