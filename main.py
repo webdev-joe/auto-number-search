@@ -28,16 +28,22 @@ def filter_available_numbers(df):
     available = []
     print(f"📋 DataFrame Columns: {df.columns.tolist()}")
 
-    # Step 1: Normalize status column and filter only 'spare'
+    # Step 1: Normalize 'Status' column to lowercase
     df['Status'] = df['Status'].astype(str).str.strip().str.lower()
     spare_df = df[df['Status'] == 'spare']
+    print(f"🔍 Total 'spare' rows: {len(spare_df)}")
 
-    # Step 2: Check that 'Current EROU holder' column exists and is truly empty
+    # Step 2: Normalize EROU values
     erou_column = 'Current EROU holder'
-    spare_df[erou_column] = spare_df[erou_column].astype(str).str.strip()
+    spare_df[erou_column] = spare_df[erou_column].fillna('').astype(str).str.strip()
 
+    # Print a few EROU values to inspect
+    print("🧪 Sample EROU values (first 10):")
+    print(spare_df[erou_column].head(10).tolist())
+
+    # Step 3: Filter to rows where EROU is completely empty
     filtered_df = spare_df[spare_df[erou_column] == '']
-    print(f"🔍 Filtered to {len(filtered_df)} rows where Status is 'spare' and EROU holder is empty.")
+    print(f"🔍 Spare rows with truly empty EROU: {len(filtered_df)}")
 
     count = 0
     for _, row in filtered_df.iterrows():
@@ -62,7 +68,7 @@ def filter_available_numbers(df):
                 available.append({"number": number_str, "status": "available"})
                 count += 1
 
-    print(f"🔢 Found {count} available numbers.")
+    print(f"🔢 Final available numbers: {count}")
     return available
 
 
