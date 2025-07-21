@@ -31,7 +31,7 @@ def filter_available_numbers(df):
     count = 0
     for _, row in df.iterrows():
         status = str(row.get("Status", "")).strip().lower()
-        erou_holder = str(row.get("Current EROU Holder", "")).strip().lower()
+        erou_holder = str(row.get("Current EROU holder", "")).strip().lower()
         from_number = str(row.get("From", "")).strip()
         to_number = str(row.get("To", "")).strip()
 
@@ -39,7 +39,7 @@ def filter_available_numbers(df):
             continue
 
         # ✅ Condition: Status must be 'spare' AND EROU holder must be truly empty
-        if status == "spare" and erou_holder in ["", "n/a", "none", "na"]:
+        if status == "spare" and erou_holder == "":
             start = int(from_number)
             end = int(to_number)
 
