@@ -28,6 +28,19 @@ def filter_available_numbers(df):
     available = []
     print(f"📋 DataFrame Columns: {df.columns.tolist()}")
 
+    # ✅ DIAGNOSTIC: Show sample non-empty EROU holders
+    non_empty_erou_samples = df[
+        df["Current EROU holder"].notna() & (df["Current EROU holder"].str.strip() != "")
+    ]["Current EROU holder"].head(10)
+    print("🔍 Sample non-empty EROU holders:", non_empty_erou_samples.tolist())
+
+    # ✅ DIAGNOSTIC: Count rows that are 'spare' and have empty EROU
+    spare_and_empty_erou = df[
+        (df["Status"].str.strip().str.lower() == "spare") &
+        (df["Current EROU holder"].isna() | (df["Current EROU holder"].str.strip() == ""))
+    ]
+    print(f"🔢 Spare with truly empty EROU: {len(spare_and_empty_erou)} rows")
+
     count = 0
     for _, row in df.iterrows():
         status = str(row.get("Status", "")).strip().lower()
@@ -38,7 +51,6 @@ def filter_available_numbers(df):
         if not from_number.isdigit() or not to_number.isdigit():
             continue
 
-        # ✅ Condition: Status must be 'spare' AND EROU holder must be truly empty
         if status == "spare" and not erou_holder:
             start = int(from_number)
             end = int(to_number)
@@ -57,6 +69,7 @@ def filter_available_numbers(df):
 
     print(f"🔢 Found {count} available numbers.")
     return available
+
 
 
 # ✅ Step 3: Save to /docs
