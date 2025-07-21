@@ -19,7 +19,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests pandas
 
       - name: Run script
         run: python main.py
@@ -36,7 +36,3 @@ jobs:
           git push origin HEAD:main
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
-
-
-
-
