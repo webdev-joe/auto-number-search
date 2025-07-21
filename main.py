@@ -24,34 +24,40 @@ def download_and_extract_csv():
     raise Exception("CSV file not found in ZIP.")
 
 # ✅ Step 2: Filter available numbers
-def filter_available_numbers(df):
-    df = df[df["Status"].str.strip().str.lower() == "spare"].copy()
-    df["From"] = pd.to_numeric(df["From"], errors="coerce")
-    df["To"] = pd.to_numeric(df["To"], errors="coerce")
-    df.dropna(subset=["From", "To"], inplace=True)
+def filter_available_numbers(csv_text):
+    reader = csv.DictReader(io.StringIO(csv_text))
+    available = []
+    headers = reader.fieldnames
+    print(f"📋 CSV Headers: {headers}")
 
-    MAX_EXPANSION = 10000  # Prevent memory overload from massive ranges
-    available_numbers = []
+    count = 0
 
-    for _, row in df.iterrows():
-        prefix = str(row["Prefix"]).strip()
-        start = int(row["From"])
-        end = int(row["To"])
+    for row in reader:
+        status = row.get("Status", "").strip().lower()
+        from_number = row.get("From", "").strip()
+        to_number = row.get("To", "").strip()
 
-        if end - start > MAX_EXPANSION:
-            continue  # Skip ranges that are too large
+        if not from_number.isdigit() or not to_number.isdigit():
+            continue
 
-        for number in range(start, end + 1):
-            if prefix == "13":
-                full_number = f"{prefix}{str(number).zfill(4)}"
-            elif prefix in ["1300", "1800"]:
-                full_number = f"{prefix}{str(number).zfill(6)}"
-            else:
-                continue
-            available_numbers.append({"number": full_number})
+        if status != "allocated":
+            start = int(from_number)
+            end = int(to_number)
 
-    print(f"🔢 Total available numbers collected: {len(available_numbers):,}")
-    return available_numbers
+            for number in range(start, end + 1):
+                number_str = str(number)
+                if number_str.startswith("13") and len(number_str) == 6:
+                    available.append({"number": number_str, "status": "available"})
+                    count += 1
+                elif number_str.startswith("1300") and len(number_str) == 10:
+                    available.append({"number": number_str, "status": "available"})
+                    count += 1
+                elif number_str.startswith("1800") and len(number_str) == 10:
+                    available.append({"number": number_str, "status": "available"})
+                    count += 1
+
+    print(f"🔢 Found {count} available numbers.")
+    return available
 
 # ✅ Step 3: Save to /docs
 def save_to_json(data):
