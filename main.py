@@ -31,15 +31,15 @@ def filter_available_numbers(df):
     count = 0
     for _, row in df.iterrows():
         status = str(row.get("Status", "")).strip().lower()
-        erou_holder = str(row.get("Current EROU Holder", "")).strip()
+        erou_holder = str(row.get("Current EROU Holder", "")).strip().lower()
         from_number = str(row.get("From", "")).strip()
         to_number = str(row.get("To", "")).strip()
 
         if not from_number.isdigit() or not to_number.isdigit():
             continue
 
-        # ✅ New rule: Only if status is 'spare' and EROU holder is empty
-        if status == "spare" and erou_holder == "":
+        # ✅ Condition: Status must be 'spare' AND EROU holder must be truly empty
+        if status == "spare" and erou_holder in ["", "n/a", "none", "na"]:
             start = int(from_number)
             end = int(to_number)
 
@@ -57,6 +57,7 @@ def filter_available_numbers(df):
 
     print(f"🔢 Found {count} available numbers.")
     return available
+
 
 # ✅ Step 3: Save to /docs
 def save_to_json(data):
