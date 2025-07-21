@@ -28,47 +28,41 @@ def filter_available_numbers(df):
     available = []
     print(f"📋 DataFrame Columns: {df.columns.tolist()}")
 
-    # ✅ DIAGNOSTIC: Show sample non-empty EROU holders
-    non_empty_erou_samples = df[
-        df["Current EROU holder"].notna() & (df["Current EROU holder"].str.strip() != "")
-    ]["Current EROU holder"].head(10)
-    print("🔍 Sample non-empty EROU holders:", non_empty_erou_samples.tolist())
+    # Step 1: Normalize status column and filter only 'spare'
+    df['Status'] = df['Status'].astype(str).str.strip().str.lower()
+    spare_df = df[df['Status'] == 'spare']
 
-    # ✅ DIAGNOSTIC: Count rows that are 'spare' and have empty EROU
-    spare_and_empty_erou = df[
-        (df["Status"].str.strip().str.lower() == "spare") &
-        (df["Current EROU holder"].isna() | (df["Current EROU holder"].str.strip() == ""))
-    ]
-    print(f"🔢 Spare with truly empty EROU: {len(spare_and_empty_erou)} rows")
+    # Step 2: Check that 'Current EROU holder' column exists and is truly empty
+    erou_column = 'Current EROU holder'
+    spare_df[erou_column] = spare_df[erou_column].astype(str).str.strip()
+
+    filtered_df = spare_df[spare_df[erou_column] == '']
+    print(f"🔍 Filtered to {len(filtered_df)} rows where Status is 'spare' and EROU holder is empty.")
 
     count = 0
-    match_count_13 = 0
-    match_count_1300 = 0
-    match_count_1800 = 0
-
-    for _, row in df.iterrows():
-        status = str(row.get("Status", "")).strip().lower()
-        erou_holder = str(row.get("Current EROU holder", "")).strip()
+    for _, row in filtered_df.iterrows():
         from_number = str(row.get("From", "")).strip()
         to_number = str(row.get("To", "")).strip()
 
         if not from_number.isdigit() or not to_number.isdigit():
             continue
 
-        if status == "spare" and not erou_holder:
-            start = int(from_number)
-            end = int(to_number)
+        start = int(from_number)
+        end = int(to_number)
 
-            for number in range(start, end + 1):
-                number_str = str(number)
-                if number_str.startswith("13") and len(number_str) == 6:
-                    match_count_13 += 1
-                elif number_str.startswith("1300") and len(number_str) == 10:
-                    match_count_1300 += 1
-                elif number_str.startswith("1800") and len(number_str) == 10:
-                    match_count_1800 += 1
+        for number in range(start, end + 1):
+            number_str = str(number)
+            if number_str.startswith("13") and len(number_str) == 6:
+                available.append({"number": number_str, "status": "available"})
+                count += 1
+            elif number_str.startswith("1300") and len(number_str) == 10:
+                available.append({"number": number_str, "status": "available"})
+                count += 1
+            elif number_str.startswith("1800") and len(number_str) == 10:
+                available.append({"number": number_str, "status": "available"})
+                count += 1
 
-    print(f"🧪 Spare numbers with no EROU — Matching 13: {match_count_13}, 1300: {match_count_1300}, 1800: {match_count_1800}")
+    print(f"🔢 Found {count} available numbers.")
     return available
 
 
