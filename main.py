@@ -31,13 +31,15 @@ def filter_available_numbers(df):
     count = 0
     for _, row in df.iterrows():
         status = str(row.get("Status", "")).strip().lower()
+        erou_holder = str(row.get("Current EROU Holder", "")).strip()
         from_number = str(row.get("From", "")).strip()
         to_number = str(row.get("To", "")).strip()
 
         if not from_number.isdigit() or not to_number.isdigit():
             continue
 
-        if status != "allocated":
+        # ✅ New rule: Only if status is 'spare' and EROU holder is empty
+        if status == "spare" and erou_holder == "":
             start = int(from_number)
             end = int(to_number)
 
