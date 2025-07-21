@@ -1,6 +1,3 @@
-# ✅ Step 1: Download ZIP
-ZIP_URL = "https://www.thenumberingsystem.com.au/download/EnhancedFullDownload.zip"
-
 import requests
 import zipfile
 import io
@@ -8,6 +5,9 @@ import csv
 import json
 import os
 import pandas as pd
+
+# ✅ Step 1: Download ZIP
+ZIP_URL = "https://www.thenumberingsystem.com.au/download/EnhancedFullDownload.zip"
 
 def download_and_extract_csv():
     response = requests.get(ZIP_URL)
@@ -20,15 +20,17 @@ def download_and_extract_csv():
                 print(f"📝 Found CSV file in ZIP: {file}")
                 with z.open(file) as csvfile:
                     return pd.read_csv(csvfile)
+
     raise Exception("CSV file not found in ZIP.")
 
+# ✅ Step 2: Filter available numbers
 def filter_available_numbers(df):
     df = df[df["Status"].str.strip().str.lower() == "spare"].copy()
     df["From"] = pd.to_numeric(df["From"], errors="coerce")
     df["To"] = pd.to_numeric(df["To"], errors="coerce")
     df.dropna(subset=["From", "To"], inplace=True)
 
-    MAX_EXPANSION = 10000
+    MAX_EXPANSION = 10000  # Prevent memory overload from massive ranges
     available_numbers = []
 
     for _, row in df.iterrows():
@@ -37,7 +39,7 @@ def filter_available_numbers(df):
         end = int(row["To"])
 
         if end - start > MAX_EXPANSION:
-            continue
+            continue  # Skip ranges that are too large
 
         for number in range(start, end + 1):
             if prefix == "13":
@@ -51,6 +53,7 @@ def filter_available_numbers(df):
     print(f"🔢 Total available numbers collected: {len(available_numbers):,}")
     return available_numbers
 
+# ✅ Step 3: Save to /docs
 def save_to_json(data):
     os.makedirs("docs", exist_ok=True)
     with open("docs/available_numbers.json", "w") as f:
