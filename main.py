@@ -19,23 +19,20 @@ def download_and_extract_csv():
             if file.endswith('.csv'):
                 print(f"📝 Found CSV file in ZIP: {file}")
                 with z.open(file) as csvfile:
-                    return pd.read_csv(csvfile)
+                    return pd.read_csv(csvfile)  # ✅ returns a DataFrame
 
     raise Exception("CSV file not found in ZIP.")
 
-# ✅ Step 2: Filter available numbers
-def filter_available_numbers(csv_text):
-    reader = csv.DictReader(io.StringIO(csv_text))
+# ✅ Step 2: Filter available numbers from DataFrame
+def filter_available_numbers(df):
     available = []
-    headers = reader.fieldnames
-    print(f"📋 CSV Headers: {headers}")
+    print(f"📋 DataFrame Columns: {df.columns.tolist()}")
 
     count = 0
-
-    for row in reader:
-        status = row.get("Status", "").strip().lower()
-        from_number = row.get("From", "").strip()
-        to_number = row.get("To", "").strip()
+    for _, row in df.iterrows():
+        status = str(row.get("Status", "")).strip().lower()
+        from_number = str(row.get("From", "")).strip()
+        to_number = str(row.get("To", "")).strip()
 
         if not from_number.isdigit() or not to_number.isdigit():
             continue
